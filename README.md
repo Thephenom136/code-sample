@@ -22,6 +22,7 @@ To run the code, use the following commands:
 •	To run the tests: `python -m unittest test_card_system.py`
 
 # Deployment
-The application can be deployed by making fork of the following GitHub repo:
-
+The application can be deployed by cloning the following GitHub repo:
+https://github.com/Thephenom136/code-sample.git
+by using the command 'git clone https://github.com/Thephenom136/code-sample.git'
 ================
