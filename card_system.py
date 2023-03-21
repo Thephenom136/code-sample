@@ -61,7 +61,27 @@ elif len(sys.argv) == 3:
         with open(sys.argv[2],'r') as i:
             lines = i.readlines()
 else:
-    print("No vaild input")
+    lines = []
+    opt = ""
+    while(opt != "4"):
+        print("Choose one option")
+        print("1: Add a new user")
+        print("2: Make a charge to a user")
+        print("3: Add credit to a user")
+        print("4: Exit")
+        opt = input()
+        if opt == "1":
+            print("Type the user to add")
+            inp = input()
+            add(inp)
+        if opt == "2":
+            print("Type the charge")
+            inp = input()
+            charge(inp)
+        if opt == "3":
+            print("Type the credit to add")
+            inp = input()
+            credit(inp)
       
 for e in lines:
     if "Add" in e:
