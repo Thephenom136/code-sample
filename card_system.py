@@ -1,32 +1,44 @@
 import sys
 
+#Add Tom Home 4111111111111111 $1000
 def add(line1):
     add_lines = line1.split()
-    
-    if(luhn_check(add_lines[2])):
-        clients_limits.update({add_lines[1]:int(add_lines[3][1:])})
-        clients_accounts.update({add_lines[1]:0})
-    else:
-        clients_limits.update({add_lines[1]:"error"})
-        clients_accounts.update({add_lines[1]:"error"})
+    client_name = add_lines[1]
+    client_limit = add_lines[4][1:]
 
+    name = client_name + "_" + add_lines[2]
+    
+    if(luhn_check(add_lines[3])):
+        clients_limits.update({name:int(client_limit)})
+        clients_accounts.update({name:0})
+    else:
+        clients_limits.update({name:"error"})
+        clients_accounts.update({name:"error"})
+
+
+#Charge Tom Home $500
 def charge(line2):
     charge_lines = line2.split()
-    charge_lines[2] = int(charge_lines[2][1:])
-    if(clients_limits[charge_lines[1]] == "error"):
-        clients_accounts[charge_lines[1]] = "error"
-    elif (charge_lines[2] + int(clients_accounts[charge_lines[1]]) > clients_limits[charge_lines[1]]):
+    client_name = charge_lines[1] +"_"+charge_lines[2]
+    client_amount = int(charge_lines[3][1:])
+
+    if(clients_limits[client_name] == "error"):
+        clients_accounts[client_name] = "error"
+    elif (client_amount + int(clients_accounts[client_name]) > clients_limits[client_name]):
         pass
     else:
-        clients_accounts[charge_lines[1]] += int(charge_lines[2])
+        clients_accounts[client_name] += int(client_amount)
 
+#Credit Lisa Platinum $100
 def credit(line3):
     credit_lines = line3.split()
-    credit_lines[2] = int(credit_lines[2][1:])
-    if(clients_limits[credit_lines[1]] == "error"):
-        clients_accounts[credit_lines[1]] = "error"
+    client_name = credit_lines[1]+"_"+credit_lines[2]
+    client_amount = int(credit_lines[3][1:])
+
+    if(clients_limits[client_name] == "error"):
+        clients_accounts[client_name] = "error"
     else:
-        clients_accounts[credit_lines[1]] -= credit_lines[2]
+        clients_accounts[client_name] -= client_amount
 
 def luhn_check(card_num):
     c = card_num
@@ -42,7 +54,7 @@ def luhn_check(card_num):
         tot += e
         band = abs(band-1)
     tot = 10 - (tot % 10)
-    return True if tot == checksum else False
+    return tot == checksum
 
 
 clients_limits = {}
@@ -63,12 +75,13 @@ elif len(sys.argv) == 3:
 else:
     lines = []
     opt = ""
-    while(opt != "4"):
+    while(opt != "5"):
         print("Choose one option")
         print("1: Add a new user")
         print("2: Make a charge to a user")
         print("3: Add credit to a user")
-        print("4: Exit")
+        print("4: Print current accounts")
+        print("5: Exit")
         opt = input()
         if opt == "1":
             print("Type the user to add")
@@ -82,6 +95,8 @@ else:
             print("Type the credit to add")
             inp = input()
             credit(inp)
+        if opt == "4":
+            print(clients_accounts)
       
 for e in lines:
     if "Add" in e:
@@ -90,7 +105,34 @@ for e in lines:
         resu = charge(e)
     elif "Credit" in e:
         resul = credit(e)
-i = list(clients_accounts.items())
-i.sort()
-for e in i:
-    print("{0}: ${1}".format(e[0],e[1]) if e[1]!="error" else "{0}: {1}".format(e[0],e[1]))
+name_type_list = list(clients_accounts.items())
+name_type_list.sort()
+
+clients_names = []
+final_list = []
+for c in name_type_list:
+    client_name = c[0].split("_")[0]
+    if client_name not in clients_names:
+        clients_names.append(client_name)
+        print(clients_names)
+        client_list_account = []
+        for cl in name_type_list:
+            print(client_name in cl[0])
+            if client_name in cl[0]:
+                client_list_account.append((cl[0].split("_")[1],cl[1]))
+        final_list.append((client_name,client_list_account))
+
+
+final_client = ""
+for client in final_list:
+    final_client = client[0]+": "
+    for account in client[1]:
+        if account[1] == "error":
+            final_client = final_client + "("+account[0]+") error,"
+        else:
+            final_client = final_client+"("+account[0]+") $"+str(account[1])+","
+    final_client = final_client[:-1]
+    print(final_client)
+#Lisa: (Gold) error, (Platinum) $-100, (Work) $7
+#for e in i:
+#    print("{0}: ${1}".format(e[0],e[1]) if e[1]!="error" else "{0}: {1}".format(e[0],e[1]))
